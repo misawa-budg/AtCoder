@@ -8,30 +8,27 @@ int main()
 
     int N, M;
     cin >> N >> M;
-
     vector<int> A(N);
-    vector<int> B(M);
+    vector<int> B(N);
     for (int i = 0; i < N; i++) cin >> A[i];
     for (int i = 0; i < M; i++) cin >> B[i];
 
-    multiset<int> st;
-    for (int i = 0; i < N; i++) {
-        st.insert(A[i]);
-    }
+    multiset<int> s;
+    for (int i = 0; i < N; i++) s.insert(A[i]);
 
-    long long ans = 0;
+    long long cost = 0;
     for (int i = 0; i < M; i++) {
-        auto it = st.lower_bound(B[i]);
-        if (it == st.end()) {
+        auto it = s.lower_bound(B[i]);
+        if (it == s.end()) {
             cout << -1 << endl;
             return 0;
         } else {
-            ans += *it;
-            st.erase(it);
+            cost += *it;
+            s.erase(it);
         }
     }
 
-    cout << ans << endl;
+    cout << cost << endl;
 
     return 0;
 }
