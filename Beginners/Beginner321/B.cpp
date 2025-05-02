@@ -10,7 +10,7 @@ int main()
     vector<int> A(N - 1); for (int i = 0; i < N - 1; i++) cin >> A[i];
 
     for (int i = 0; i <= 100; i++) {
-        int minNum = INT_MAX;
+        int minNum = LLONG_MAX;
         int maxNum = INT_MIN;
         int sum = 0;
         vector<int> B = A;
