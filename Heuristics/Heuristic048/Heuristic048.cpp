@@ -63,7 +63,7 @@ int main()
         int best_j = -1, best_l = -1;
         double min_dist_sq_A = numeric_limits<double>::max();
         for (int j = 0; j < K; ++j) {
-            for (int l = j + 1; l < K; ++l) {
+            for (int l = j; l < K; ++l) {
                 Color mixed = mix_50_50(own_colors[j], own_colors[l]);
                 double dist_sq = calculate_distance(target_colors[h], mixed);
                 if (dist_sq < min_dist_sq_A) {
