@@ -8,7 +8,7 @@ int main()
 
     int N; cin >> N;
     vector<long long> x(N); for (int i = 0; i < N; i++) cin >> x[i];
-    vector<vector<pair<int, long long>>> adj(N - 1);
+    vector<vector<pair<int, long long>>> adj(N);
     for (int i = 0; i < N - 1; i++) {
         int u, v, w; cin >> u >> v >> w;
         u--; v--;
