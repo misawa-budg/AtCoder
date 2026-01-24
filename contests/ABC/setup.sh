@@ -2,6 +2,8 @@
 
 set -e
 
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+
 if [ -z "$1" ]; then
     echo "Usage: $0 <contest_number> [last_problem]"
     echo "  last_problem: A-F (default: D)"
@@ -24,21 +26,22 @@ fi
 
 CONTEST_NUM_PADDED=$(printf "%03d" "$CONTEST_NUM_RAW")
 DIR_NAME="ABC${CONTEST_NUM_PADDED}"
+TARGET_DIR="${SCRIPT_DIR}/${DIR_NAME}"
 
-if [ -d "$DIR_NAME" ]; then
-    echo "Directory $DIR_NAME already exists"
+if [ -d "$TARGET_DIR" ]; then
+    echo "Directory $TARGET_DIR already exists"
     exit 1
 fi
 
-echo "Creating directory $DIR_NAME"
-mkdir "$DIR_NAME"
+echo "Creating directory $TARGET_DIR"
+mkdir "$TARGET_DIR"
 
-cd "$DIR_NAME"
+cd "$TARGET_DIR"
 
 echo "Creating empty files (A.cpp - ${LAST_PROBLEM}.cpp)"
 last_ascii=$(printf "%d" "'$LAST_PROBLEM")
 for ascii in $(seq 65 "$last_ascii"); do
-    problem=$(printf "\\x%02X" "$ascii")
+    problem=$(printf "%c" "$ascii")
     touch "${problem}.cpp"
 done
 
