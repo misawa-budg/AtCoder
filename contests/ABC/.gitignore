@@ -1,5 +1,3 @@
-.vscode
-
 # local scratch
 tmp/
 
@@ -10,3 +8,14 @@ tmp/
 *.class
 *.dSYM/
 a.out
+
+# typical contest executables (no extension)
+A
+B
+C
+D
+E
+F
+G
+H
+main

@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "*.dbclient-js": "javascript",
+        "ostream": "cpp"
+    },
+    "code-runner.executorMap": {
+        "cpp": "cd $dir && g++ -std=gnu++20 -O2 -Wall -Wextra -fdiagnostics-color=always -I${workspaceFolder}/../.. \"$fileName\" -o \"$fileNameWithoutExt\" && ./$fileNameWithoutExt"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/g++",
+    "C_Cpp.default.cppStandard": "gnu++20",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/../..",
+        "${workspaceFolder}/../..//**"
+    ]
+}
