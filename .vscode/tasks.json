@@ -7,7 +7,7 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "-std=gnu++20",
+                "-std=gnu++23",
                 "-O2",
                 "-Wall",
                 "-Wextra",

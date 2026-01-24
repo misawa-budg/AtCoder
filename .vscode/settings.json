@@ -1,8 +1,17 @@
 {
   "code-runner.executorMap": {
-    "cpp": "cd $dir && g++ -std=gnu++20 -O2 -Wall -Wextra -fdiagnostics-color=always -I$workspaceRoot \"$fileName\" -o \"$fileNameWithoutExt\" && ./$fileNameWithoutExt",
+    "cpp": "cd $dir && g++ -std=gnu++23 -O2 -Wall -Wextra -fdiagnostics-color=always -I$workspaceRoot \"$fileName\" -o \"$fileNameWithoutExt\" && ./$fileNameWithoutExt",
     "c": "cd $dir && gcc -std=c17 -O2 -Wall -Wextra -fdiagnostics-color=always \"$fileName\" -o \"$fileNameWithoutExt\" && ./$fileNameWithoutExt"
   },
+  "C_Cpp.default.compilerPath": "/usr/bin/g++",
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+  "C_Cpp.default.cppStandard": "gnu++23",
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}",
+    "${workspaceFolder}/**"
+  ],
+  "C_Cpp.errorSquiggles": "Disabled",
   "[scss]": {
     "editor.tabSize": 4
   }
