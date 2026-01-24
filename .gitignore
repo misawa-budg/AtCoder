@@ -1,3 +1,7 @@
 .vscode
 practice/
 */*/*.dSYM/
+
+# local scratch
+tmp/
+**/tmp/
