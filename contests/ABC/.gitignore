@@ -1,3 +1,7 @@
+# VS Code
+.vscode/
+**/.vscode/
+
 # local scratch
 tmp/
 
