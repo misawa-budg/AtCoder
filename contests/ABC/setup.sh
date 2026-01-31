@@ -38,11 +38,26 @@ mkdir "$TARGET_DIR"
 
 cd "$TARGET_DIR"
 
-echo "Creating empty files (A.cpp - ${LAST_PROBLEM}.cpp)"
-last_ascii=$(printf "%d" "'$LAST_PROBLEM")
-for ascii in $(seq 65 "$last_ascii"); do
-    problem=$(printf "%c" "$ascii")
-    touch "${problem}.cpp"
+echo "Creating files from template (A.cpp - ${LAST_PROBLEM}.cpp)"
+for problem in A B C D E F; do
+    cat > "${problem}.cpp" <<'EOF'
+#include <bits/stdc++.h>
+using namespace std;
+
+int main()
+{
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+
+
+    return 0;
+}
+EOF
+
+    if [ "$problem" = "$LAST_PROBLEM" ]; then
+        break
+    fi
 done
 
 echo "Done!"
