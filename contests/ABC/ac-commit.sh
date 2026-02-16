@@ -5,10 +5,11 @@ set -euo pipefail
 usage() {
     cat <<'EOF'
 Usage:
-  ./contests/ABC/ac-commit.sh [--push] [contest [problems...]]
+  ./contests/ABC/ac-commit.sh [--push] [--retry] [contest [problems...]]
 
 Behavior:
   - Default is auto mode (no contest/problems): detect changed ABC files.
+  - --retry mode: target exactly one problem and use retry commit message.
   - Before running git add/commit, show target files and wait for Enter.
   - If --push is set, run git push after successful commit.
 
@@ -17,6 +18,8 @@ Examples:
   ./contests/ABC/ac-commit.sh --push
   ./contests/ABC/ac-commit.sh 443 A B C
   ./contests/ABC/ac-commit.sh ABC443 D
+  ./contests/ABC/ac-commit.sh --retry 445 A
+  ./contests/ABC/ac-commit.sh --push --retry ABC445 A
 EOF
 }
 
@@ -62,17 +65,40 @@ collect_changed_abc_files() {
     } | sort -u
 }
 
+next_retry_count() {
+    local contest problem file subject max n
+    contest="$1"
+    problem="$2"
+    file="$3"
+    max=0
+
+    while IFS= read -r subject; do
+        if [[ "$subject" =~ ^retry:\ ${contest}\ ${problem}\ ([0-9]+)$ ]]; then
+            n="${BASH_REMATCH[1]}"
+            if (( n > max )); then
+                max="$n"
+            fi
+        fi
+    done < <(git log --format='%s' -- "$file")
+
+    printf '%d\n' "$((max + 1))"
+}
+
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
 REPO_ROOT=$(git -C "$SCRIPT_DIR" rev-parse --show-toplevel)
 cd "$REPO_ROOT"
 
 PUSH=false
+RETRY=false
 declare -a POSITIONAL=()
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
     --push)
         PUSH=true
+        ;;
+    --retry)
+        RETRY=true
         ;;
     --auto)
         ;;
@@ -100,54 +126,75 @@ done
 declare contest=""
 declare -a target_files=()
 declare -a problems=()
+commit_msg=""
 
-if [[ ${#POSITIONAL[@]} -eq 0 ]]; then
-    mapfile -t target_files < <(collect_changed_abc_files)
-    if [[ ${#target_files[@]} -eq 0 ]]; then
-        echo "No changed ABC files found under contests/ABC/ABCNNN/[A-F].cpp" >&2
+if $RETRY; then
+    if [[ ${#POSITIONAL[@]} -ne 2 ]]; then
+        echo "--retry requires: contest and exactly one problem (e.g. --retry 445 A)" >&2
         exit 1
     fi
 
-    declare -A contest_seen=()
-    declare -a contests=()
-    for file in "${target_files[@]}"; do
-        c=$(basename "$(dirname "$file")")
-        if [[ -z "${contest_seen[$c]:-}" ]]; then
-            contest_seen[$c]=1
-            contests+=("$c")
-        fi
-    done
-
-    if [[ ${#contests[@]} -ne 1 ]]; then
-        echo "Auto mode found multiple contests. Specify contest manually." >&2
-        printf 'Detected: %s\n' "${contests[@]}" >&2
-        exit 1
-    fi
-
-    contest="${contests[0]}"
-else
     contest=$(normalize_contest "${POSITIONAL[0]}")
+    p=$(normalize_problem "${POSITIONAL[1]}")
+    file="contests/ABC/${contest}/${p}.cpp"
+    if [[ ! -f "$file" ]]; then
+        echo "File not found: $file" >&2
+        exit 1
+    fi
 
-    if [[ ${#POSITIONAL[@]} -eq 1 ]]; then
-        while IFS= read -r file; do
-            if [[ "$file" =~ ^contests/ABC/${contest}/[A-F]\.cpp$ ]]; then
-                target_files+=("$file")
-            fi
-        done < <(collect_changed_abc_files)
+    target_files=("$file")
+    problems=("$p")
+    retry_count=$(next_retry_count "$contest" "$p" "$file")
+    commit_msg="retry: ${contest} ${p} ${retry_count}"
+else
+    if [[ ${#POSITIONAL[@]} -eq 0 ]]; then
+        mapfile -t target_files < <(collect_changed_abc_files)
         if [[ ${#target_files[@]} -eq 0 ]]; then
-            echo "No changed files found for ${contest}. Add problems explicitly (e.g. ${contest} A B C)." >&2
+            echo "No changed ABC files found under contests/ABC/ABCNNN/[A-F].cpp" >&2
             exit 1
         fi
+
+        declare -A contest_seen=()
+        declare -a contests=()
+        for file in "${target_files[@]}"; do
+            c=$(basename "$(dirname "$file")")
+            if [[ -z "${contest_seen[$c]:-}" ]]; then
+                contest_seen[$c]=1
+                contests+=("$c")
+            fi
+        done
+
+        if [[ ${#contests[@]} -ne 1 ]]; then
+            echo "Auto mode found multiple contests. Specify contest manually." >&2
+            printf 'Detected: %s\n' "${contests[@]}" >&2
+            exit 1
+        fi
+
+        contest="${contests[0]}"
     else
-        for raw_problem in "${POSITIONAL[@]:1}"; do
-            p=$(normalize_problem "$raw_problem")
-            file="contests/ABC/${contest}/${p}.cpp"
-            if [[ ! -f "$file" ]]; then
-                echo "File not found: $file" >&2
+        contest=$(normalize_contest "${POSITIONAL[0]}")
+
+        if [[ ${#POSITIONAL[@]} -eq 1 ]]; then
+            while IFS= read -r file; do
+                if [[ "$file" =~ ^contests/ABC/${contest}/[A-F]\.cpp$ ]]; then
+                    target_files+=("$file")
+                fi
+            done < <(collect_changed_abc_files)
+            if [[ ${#target_files[@]} -eq 0 ]]; then
+                echo "No changed files found for ${contest}. Add problems explicitly (e.g. ${contest} A B C)." >&2
                 exit 1
             fi
-            target_files+=("$file")
-        done
+        else
+            for raw_problem in "${POSITIONAL[@]:1}"; do
+                p=$(normalize_problem "$raw_problem")
+                file="contests/ABC/${contest}/${p}.cpp"
+                if [[ ! -f "$file" ]]; then
+                    echo "File not found: $file" >&2
+                    exit 1
+                fi
+                target_files+=("$file")
+            done
+        fi
     fi
 fi
 
@@ -170,8 +217,10 @@ IFS=$'\n' read -r -d '' -a target_files < <(printf '%s\n' "${target_files[@]}" |
 IFS=$'\n' read -r -d '' -a problems < <(printf '%s\n' "${problems[@]}" | sort -u && printf '\0')
 unset IFS
 
-problem_joined=$(printf '%s' "${problems[@]}")
-commit_msg="solve: ${contest} ${problem_joined}"
+if ! $RETRY; then
+    problem_joined=$(printf '%s' "${problems[@]}")
+    commit_msg="solve: ${contest} ${problem_joined}"
+fi
 
 echo "Repository: ${REPO_ROOT}"
 echo "Commit message: ${commit_msg}"
