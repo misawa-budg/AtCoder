@@ -7,22 +7,13 @@ int main()
     cin.tie(nullptr);
 
     int N; cin >> N;
-    vector<long long> A(N); for (int i = 0; i < N; i++) cin >> A[i];
 
-    unordered_map<long long, int> dp;
-
+    unordered_map<int, int> mp;
     int ans = 0;
-    for (long long x : A) {
-        int prev = 0; // 前の数字が存在しない
-        auto it = dp.find(x - 1);
-        if (it != dp.end()) prev = it->second; // 前の数字の最大長
-
-        int cur = prev + 1;
-        auto it2 = dp.find(x);
-        if (it2 == dp.end()) dp[x] = cur;
-        else it2->second = max(it2->second, cur);
-        
-        ans = max(ans, dp[x]);
+    for (int i = 0; i < N; i++) {
+        int A; cin >> A;
+        mp[A] = max(mp[A], mp[A - 1] + 1);
+        ans = max(ans, mp[A]);
     }
 
     cout << ans << '\n';
