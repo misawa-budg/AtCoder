@@ -8,24 +8,23 @@ int main()
 
     int N, M; cin >> N >> M;
 
-    vector<bool> used(M, false);
+    vector<bool> isused(M + 1, false);
     for (int i = 0; i < N; i++) {
-        bool found = false;
         int len; cin >> len;
         vector<int> juice(len);
         for (int j = 0; j < len; j++) {
             cin >> juice[j];
         }
 
+        int ans = 0;
         for (int j = 0; j < len; j++) {
-            if (!used[juice[j]]) {
-                cout << juice[j] << '\n';
-                used[juice[j]] = true;
-                found = true;
+            if (!isused[juice[j]]) {
+                ans = juice[j];
+                isused[juice[j]] = true;
                 break;
             }
         }
-        if (!found) cout << 0 << '\n';
+        cout << ans << '\n';
     }
 
     return 0;
