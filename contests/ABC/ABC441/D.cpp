@@ -6,39 +6,40 @@ int main()
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    long long N, M, L, S, T;
-    cin >> N >> M >> L >> S >> T;
+    int N, M, L; cin >> N >> M >> L;
+    long long S, T; cin >> S >> T;
     vector<vector<pair<int, long long>>> G(N);
     for (int i = 0; i < M; i++) {
         int u, v; cin >> u >> v; u--; v--;
-        long long cost; cin >> cost;
-        G[u].emplace_back(v, cost);
+        long long c; cin >> c;
+        G[u].emplace_back(v, c);
     }
 
-    vector<bool> ok(N, false);
-
-    // origin, total, count
-    queue<tuple<int, long long, int>> q;
-    q.push({ 0, 0, 0 });
-    while (!q.empty()) {
-        auto [origin, total, count] = q.front();
-        q.pop();
+    vector<bool> ans(N, false);
+    // cur, total_cost, move_count
+    deque<tuple<int, long long, int>> s;
+    s.emplace_back(0, 0, 0);
+    while (!s.empty()) {
+        auto [cur, total, count] = s.back();
+        s.pop_back();
 
         if (count == L && (S <= total && total <= T)) {
-            ok[origin] = true;
+            ans[cur] = true;
             continue;
-        } else if (count == L) continue;
+        } else if (count == L || total > T) {
+            continue;
+        }
 
-        for (int i = 0; i < G[origin].size(); i++) {
-            auto [next, cost] = G[origin][i];
+        for (auto [next, cost] : G[cur]) {
             if (total + cost > T) continue;
-            q.emplace(next, total + cost, count + 1);
+            s.emplace_back(next, total + cost, count + 1);
         }
     }
 
     for (int i = 0; i < N; i++) {
-        if (ok[i]) cout << i + 1 << ' ';
-    } cout << '\n';
+        if (ans[i]) cout << i + 1 << ' ';
+    }
+    cout << '\n';
 
     return 0;
 }
