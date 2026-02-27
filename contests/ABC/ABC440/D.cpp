@@ -9,22 +9,18 @@ int main()
     int N, Q; cin >> N >> Q;
     vector<int> A(N); for (int i = 0; i < N; i++) cin >> A[i];
     vector<int> X(Q), Y(Q);
-    for (int i = 0; i < Q; i++) {
-        cin >> X[i] >> Y[i];
-    }
+    for (int i = 0; i < Q; i++) cin >> X[i] >> Y[i];
 
     sort(A.begin(), A.end(), [&](int x, int y) { return x < y; });
 
     for (int i = 0; i < Q; i++) {
-        // X ... A[si] ... (X + Y - 1) + (ti - 1- si + 1) ... A[ti]
-        // (A[ti] - X + 1) - (ti - si + 1) >= Y となる最小のtiを求める
-        // (X + Y - 1) + (ti - si)が答え
+        // X ... A[si] ... (X + Y - 1) + (ti - si) ... A[ti]
+        // (A[ti] - X + 1) - (ti - si + 1) >= Yになればよい
         int si = lower_bound(A.begin(), A.end(), X[i]) - A.begin();
 
         int ng = si - 1, ok = N;
         while (ok - ng > 1) {
-            int mid = (ng + ok) / 2;
-            
+            int mid = (ok + ng) / 2;
             if ((A[mid] - X[i] + 1) - (mid - si + 1) >= Y[i]) {
                 ok = mid;
             } else {
