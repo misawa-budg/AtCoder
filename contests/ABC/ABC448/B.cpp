@@ -7,20 +7,16 @@ int main()
     cin.tie(nullptr);
 
     int N, M; cin >> N >> M;
-    vector<int> C(M+1); for (int i = 1; i <= M; i++) cin >> C[i];
-    vector<int> A(N), B(N);
+    vector<int> C(M); for (int i = 0; i < M; i++) cin >> C[i];
+    int ans = 0;
     for (int i = 0; i < N; i++) {
-        cin >> A[i] >> B[i];
-    }
-
-    long long ans = 0;
-    for (int i = 0; i < N; i++) {
-        if (C[A[i]] < B[i]) {
-            ans += C[A[i]];
-            C[A[i]] = 0;
+        int A, B; cin >> A >> B; A--;
+        if (C[A] < B) {
+            ans += C[A];
+            C[A] = 0;
         } else {
-            ans += B[i];
-            C[A[i]] -= B[i];
+            ans += B;
+            C[A] -= B;
         }
     }
     cout << ans << '\n';
