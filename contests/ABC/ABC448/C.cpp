@@ -7,31 +7,27 @@ int main()
     cin.tie(nullptr);
 
     int N, Q; cin >> N >> Q;
-    vector<pair<int, int>> balls(N);
-    for (int i = 0; i < N; i++) {
-        int num; cin >> num;
-        balls[i] = make_pair(num, i+1);
-    }
-    sort(balls.begin(), balls.end(), [&](auto x, auto y){return x.first < y.first;});
+    vector<int> A(N); for (int i = 0; i < N; i++) cin >> A[i];
+    vector<int> ordA(N);
+    iota(ordA.begin(), ordA.end(), 0);
+    sort(ordA.begin(), ordA.end(), [&](int x, int y) { return A[x] < A[y]; });
 
     while (Q--) {
         int K; cin >> K;
-        vector<int> excludes(K); for (int i = 0; i < K; i++) cin >> excludes[i];
+        vector<int> B(K); for (int i = 0; i < K; i++) cin >> B[i];
 
-        int idx = 0;
-        while (true) {
+        for (int i = 0; i <= K; i++) {
             bool found = true;
-            for (int i = 0; i < K; i++) {
-                if (balls[idx].second == excludes[i]) {
+            for (int j = 0; j < K; j++) {
+                if (ordA[i] == B[j]-1) {
                     found = false;
                     break;
-                }            
+                }
             }
             if (found) {
-                cout << balls[idx].first << '\n';
+                cout << A[ordA[i]] << '\n';
                 break;
             }
-            idx++;
         }
     }
 
