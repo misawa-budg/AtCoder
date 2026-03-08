@@ -13,7 +13,9 @@ int main()
         if (A[i] < X) {
             X = A[i];
             cout << 1 << '\n';
-        } else cout << 0 << '\n';
+        } else {
+            cout << 0 << '\n';
+        }
     }
 
     return 0;
