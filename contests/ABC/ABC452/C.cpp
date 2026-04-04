@@ -14,11 +14,11 @@ int main()
 
     int M; cin >> M;
     vector<string> S(M);
-    bool have[11][11][26];
+    bool has[11][11][26];
     for (int i = 0; i < M; i++) {
         cin >> S[i];
         for (int j = 0; j < S[i].length(); j++) {
-            have[S[i].length()][j + 1][S[i][j] - 'a'] = true;
+            has[S[i].length()][j + 1][S[i][j] - 'a'] = true;
         }
     }
 
@@ -30,15 +30,12 @@ int main()
 
         bool ok = true;
         for (int j = 0; j < N; j++) {
-            int needLen = A[j], needPos = B[j];
-            char needChar = S[i][j];
-
-            if (!have[needLen][needPos][needChar - 'a']) {
+            if (!has[A[j]][B[j]][S[i][j] - 'a']) {
                 ok = false;
                 break;
             }
         }
-        
+
         if (ok) cout << "Yes\n";
         else cout << "No\n";
     }
