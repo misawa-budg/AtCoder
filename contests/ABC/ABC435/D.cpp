@@ -7,36 +7,33 @@ int main()
     cin.tie(nullptr);
 
     int N, M; cin >> N >> M;
-    vector<vector<int>> revG(N);
+    vector<vector<int>> rev_edges(N + 1);
     for (int i = 0; i < M; i++) {
-        int x, y; cin >> x >> y; x--; y--;
-        revG[y].push_back(x);
+        int x, y; cin >> x >> y;
+        rev_edges[y].push_back(x);
     }
 
-    vector<bool> visited(N, false);
-    queue<int> q;
-
+    vector<bool> can_reach(N + 1, false);
     int Q; cin >> Q;
-    for (int i = 0; i < Q; i++) {
-        int query; cin >> query;
-        int v; cin >> v; v--;
-        if (query == 1) {
-            if (visited[v]) continue;
+    while (Q--) {
+        int query, v; cin >> query >> v;
 
+        if (query == 1) {    
+            if (can_reach[v]) continue;
+
+            queue<int> q;
+            can_reach[v] = true;
             q.push(v);
             while (!q.empty()) {
-                int u = q.front();
-                q.pop();
-
-                visited[u] = true;
-
-                for (int n : revG[u]) {
-                    if (!visited[n]) 
-                        q.push(n);
+                int cur = q.front(); q.pop();
+                for (int next : rev_edges[cur]) {
+                    if (can_reach[next]) continue;
+                    can_reach[next] = true;
+                    q.push(next);
                 }
             }
         } else if (query == 2) {
-            if (visited[v]) cout << "Yes\n";
+            if (can_reach[v]) cout << "Yes\n";
             else cout << "No\n";
         }
     }

@@ -9,14 +9,16 @@ int main()
     int N; cin >> N;
     vector<int> A(N); for (int i = 0; i < N; i++) cin >> A[i];
 
-    int reach = A[0] - 1;
-    int res = 1;
-    for (int i = 1; i < N; i++) {
-        if (reach < i) break;
-        res++;
-        reach = max(reach, i + A[i] - 1);
+    int reached = 0;
+    int ans = 0;
+
+    for (int i = 0; i < N; i++) {
+        if (reached < i) break;
+        reached = max(reached, i + A[i] - 1);
+        ans++;
     }
-    cout << res << '\n';
+
+    cout << ans << '\n';
 
     return 0;
 }

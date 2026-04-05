@@ -7,12 +7,8 @@ int main()
     cin.tie(nullptr);
 
     int N; cin >> N;
-    
-    int result = 0;
-    for (int i = 1; i <= N; i++) {
-        result += i;
-    }
-    cout << result << '\n';
+
+    cout << N * (N + 1) / 2 << '\n';
 
     return 0;
 }

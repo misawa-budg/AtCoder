@@ -7,29 +7,27 @@ int main()
     cin.tie(nullptr);
 
     int N; cin >> N;
-    vector<int> A(N+1); for (int i = 1; i <= N; i++) cin >> A[i];
+    vector<int> A(N); for (int i = 0; i < N; i++) cin >> A[i];
 
-    vector<int> prefixSum(N+1, 0);
-    for (int i = 0; i < N; i++) {
-        prefixSum[i+1] = prefixSum[i] + A[i+1];
-    }
-    // prefixSum[r] - prefixSum[l-1] == sum(l..r)
+    vector<int> prefixS(N + 1, 0);
+    for (int i = 0; i < N; i++) prefixS[i + 1] = prefixS[i] + A[i];
 
-    int ans = 0;
+    long long total = 0;
     for (int l = 1; l <= N; l++) {
         for (int r = l; r <= N; r++) {
-            int sectionSum = prefixSum[r] - prefixSum[l-1];
             bool ok = true;
             for (int i = l; i <= r; i++) {
-                if (sectionSum % A[i] == 0) {
+                int rangeS = prefixS[r] - prefixS[l - 1];
+                if (rangeS % A[i-1] == 0) {
                     ok = false;
                     break;
                 }
             }
-            if (ok) ans++;
+            if (ok) total++;
         }
     }
-    cout << ans << '\n';
+
+    cout << total << '\n';
 
     return 0;
 }
