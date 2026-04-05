@@ -8,63 +8,63 @@ int main()
 
     int H, W; cin >> H >> W;
     vector<string> S(H);
+    vector<vector<pair<int, int>>> ports(26);
     for (int i = 0; i < H; i++) {
         cin >> S[i];
-    }
-
-    vector<vector<pair<int, int>>> warps(26);
-    for (int i = 0; i < H; i++) {
         for (int j = 0; j < W; j++) {
             if ('a' <= S[i][j] && S[i][j] <= 'z') {
-                warps[S[i][j] - 'a'].emplace_back(i, j);
+                ports[S[i][j] - 'a'].emplace_back(i, j);
             }
         }
     }
 
-    vector<vector<int>> dist(H, vector<int>(W, -1));
+
+    auto inside = [&](int r, int c) {
+        return 0 <= r && r < H && 0 <= c && c < W;
+    };
+
+    vector<vector<int>> costs(H, vector<int>(W, -1));
+    vector<vector<bool>> visited(H, vector<bool>(W, false));
     vector<bool> used(26, false);
 
+    int dr[] = {-1, 1, 0, 0};
+    int dc[] = {0, 0, -1, 1};
+
     queue<pair<int, int>> q;
-    dist[0][0] = 0;
-    q.push({0, 0});
-
-    int dx[4] = {-1, 0, 1, 0};
-    int dy[4] = {0, 1, 0, -1};
-
+    q.emplace(0, 0);
+    costs[0][0] = 0;
+    visited[0][0] = true;
     while (!q.empty()) {
-        auto [x, y] = q.front();
-        q.pop();
-
-        if (x == H - 1 && y == W - 1) {
-            cout << dist[x][y] << '\n';
-            return 0;
-        }
+        auto [curr, curc] = q.front(); q.pop();
+        if (curr == H - 1 && curc == W - 1) break;
 
         for (int dir = 0; dir < 4; dir++) {
-            int nx = x + dx[dir];
-            int ny = y + dy[dir];
+            int nextr = curr + dr[dir];
+            int nextc = curc + dc[dir];
+            if (!inside(nextr, nextc)) continue;
+            if (visited[nextr][nextc]) continue;
+            if (S[nextr][nextc] == '#') continue;
 
-            if (nx < 0 || nx >= H || ny < 0 || ny >= W) continue;
-            if (S[nx][ny] == '#') continue;
-            if (dist[nx][ny] != -1) continue;
-
-            dist[nx][ny] = dist[x][y] + 1;
-            q.push({nx, ny});
+            visited[nextr][nextc] = true;
+            costs[nextr][nextc] = costs[curr][curc] + 1;
+            q.emplace(nextr, nextc);
         }
 
-        if ('a' <= S[x][y] && S[x][y] <= 'z') {
-            int c = S[x][y] - 'a';
-            if (!used[c]) {
-                used[c] = true;
-                for (auto [nx, ny] : warps[c]) {
-                    if (dist[nx][ny] != -1) continue;
-                    dist[nx][ny] = dist[x][y] + 1;
-                    q.push({nx, ny});
-                }
+        if ('a' <= S[curr][curc] && S[curr][curc] <= 'z') {
+            if (used[S[curr][curc] - 'a']) continue;
+            for (const auto& [nextr, nextc] : ports[S[curr][curc] - 'a']) {
+                if (nextr == curr && nextc == curc) continue;
+                if (visited[nextr][nextc]) continue;
+
+                visited[nextr][nextc] = true;
+                costs[nextr][nextc] = costs[curr][curc] + 1;
+                q.emplace(nextr, nextc);
             }
+            used[S[curr][curc] - 'a'] = true;
         }
     }
-    cout << -1 << '\n';
+
+    cout << costs[H - 1][W - 1] << '\n';
 
     return 0;
 }

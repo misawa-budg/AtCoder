@@ -7,39 +7,37 @@ int main()
     cin.tie(nullptr);
 
     int N, M; cin >> N >> M;
-    vector<int> R(M), C(M);
-    for (int i = 0; i < M; i++) {
-        cin >> R[i] >> C[i];
-    }
+    set<pair<int, int>> s;
 
-    set<pair<int, int>> isused;
-    vector<short> dx = {0, 1, 0, 1};
-    vector<short> dy = {0, 0, 1, 1};
+    int dx[] = {1, 1, 0, 0};
+    int dy[] = {0, 1, 0, 1};
 
-    long long ans = 0;
+    int total = 0;
     for (int i = 0; i < M; i++) {
-        int startR = R[i], startC = C[i];
-        bool can = true;
-        for (int j = 0; j < 4; j++) {
-            int useR = startR + dy[j];
-            int useC = startC + dx[j];
-            if (isused.contains(make_pair(useR, useC))) {
-                can = false;
+        int r, c; cin >> r >> c;
+        bool unique = true;
+
+        for (int dir = 0; dir < 4; dir++) {
+            int nr = r + dy[dir];
+            int nc = c + dx[dir];
+            if (s.contains(make_pair(nr, nc))) {
+                unique = false;
                 break;
             }
         }
 
-        if (can) {
-            for (int j = 0; j < 4; j++) {
-                int useR = startR + dy[j];
-                int useC = startC + dx[j];
-                isused.insert(make_pair(useR, useC));
-            }
-            ans++;
+        if (!unique) continue;
+
+        for (int dir = 0; dir < 4; dir++) {
+            int nr = r + dy[dir];
+            int nc = c + dx[dir];
+            s.emplace(nr, nc);
         }
+
+        total++;
     }
 
-    cout << ans << '\n';
+    cout << total << '\n';
 
     return 0;
 }

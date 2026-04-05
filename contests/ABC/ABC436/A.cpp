@@ -8,12 +8,7 @@ int main()
 
     int N; cin >> N;
     string S; cin >> S;
-    int len = S.size();
-    while (len < N) {
-        cout << 'o';
-        len++;
-    }
-    cout << S << '\n';
+    cout << string(N - S.length(), 'o') << S << '\n';
 
     return 0;
 }
