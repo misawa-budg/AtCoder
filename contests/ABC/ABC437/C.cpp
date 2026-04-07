@@ -9,27 +9,27 @@ int main()
     int T; cin >> T;
     while (T--) {
         int N; cin >> N;
-        vector<pair<long long, long long>> deer(N);
-        long long totalP = 0;
+        long long totalPower = 0;
+        vector<pair<long long, long long>> deers(N);
         for (int i = 0; i < N; i++) {
-            cin >> deer[i].first >> deer[i].second;
-            totalP += deer[i].second;
+            cin >> deers[i].first >> deers[i].second;
+            totalPower += deers[i].second;
         }
 
-        // totalP = 総和
-        // 1匹乗る -> totalP - P[i] && 負担+W[i]
-        // totalP - (P[i] + W[i]) >= 0の間はok
-        sort(deer.begin(), deer.end(), [&](auto x, auto y) {
-            return (x.first + x.second) < (y.first + y.second);
+        sort(deers.begin(), deers.end(), [&](auto x, auto y) {
+            return x.first + x.second < y.first + y.second;
         });
 
-        int res = 0;
+        // P * (N - k) >= W * k
+        // - P*k - W*k >= - P*N
+        // (P + W) * k <= P * N
+        
+        long long ans = 0, total = 0;
         for (int i = 0; i < N; i++) {
-            totalP -= (deer[i].first + deer[i].second);
-            if (totalP >= 0) res++;
-            else break;
+            total += deers[i].first + deers[i].second;
+            if (total <= totalPower) ans++;
         }
-        cout << res << '\n';
+        cout << ans << '\n';
     }
 
     return 0;

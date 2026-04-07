@@ -7,25 +7,23 @@ int main()
     cin.tie(nullptr);
 
     int H, W, N; cin >> H >> W >> N;
-    vector<vector<int>> A(H, vector<int>(W));
+    vector<vector<int>> count_per_row(H, vector<int>(91, 0));
     for (int i = 0; i < H; i++) {
         for (int j = 0; j < W; j++) {
-            cin >> A[i][j];
+            int num; cin >> num;
+            count_per_row[i][num]++;
         }
-    }
-    set<int> B;
-    for (int i = 0; i < N; i++) {
-        int num; cin >> num;
-        B.insert(num);
     }
 
-    int ans = 0;
+    vector<int> B(N); for (int i = 0; i < N; i++) cin >> B[i];
+
+    int ans = -1;
     for (int i = 0; i < H; i++) {
-        int num = 0;
-        for (int j = 0; j < W; j++) {
-            if (B.contains(A[i][j])) num++;
+        int count = 0;
+        for (int j = 0; j < N; j++) {
+            count += count_per_row[i][B[j]];
         }
-        ans = max(ans, num);
+        ans = max(ans, count);
     }
 
     cout << ans << '\n';
