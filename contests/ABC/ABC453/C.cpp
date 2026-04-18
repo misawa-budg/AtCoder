@@ -1,40 +1,34 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int N; cin >> N;
-    vector<long long> L(N); for (int i = 0; i < N; i++) cin >> L[i];
-
-    int ans = 0;
-    for (int bit = 0; bit < (1 << N); bit++) {
-        int count = 0;
-        long long cur = 1; 
-        int sign = 1;
-        for (int i = 0; i < N; i++) {
-            if (bit & (1 << i)) {
-                cur += L[i];
-                if (cur > 0 && sign == 1) continue;
-                else if (cur > 0 && sign == -1) {
-                    sign = 1;
-                    count++;
-                }
-            } else {
-                cur -= L[i];
-                if (cur <= 0 && sign == -1) continue;
-                else if (cur <= 0 && sign == 1) {
-                    sign = -1;
-                    count++;
-                }
-            }
-        }
-        ans = max(ans, count);
+    vector<long long> L(N);
+    for (int i = 0; i < N; i++) {
+        cin >> L[i];
+        L[i] *= 2;
     }
 
-    cout << ans << '\n';
+    int result = 0;
+    for (int bit = 0; bit < (1 << N); bit++) {
+        long long cur = 1;
+        int sign = 1, count = 0;
+        for (int i = 0; i < N; i++) {
+            if ((1 << i) & bit) cur += L[i];
+            else cur -= L[i];
+
+            if (sign * cur < 0) {
+                count++;
+                sign = -sign;
+            }
+        }
+        result = max(result, count);
+    }
+
+    cout << result << '\n';
 
     return 0;
 }
