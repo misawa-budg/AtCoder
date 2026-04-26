@@ -1,35 +1,33 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int calc(int x)
-{
-    int total = 0;
-    string str_num = to_string(x);
-    for (char& c : str_num) {
-        total += (c - '0') * (c - '0');
-    }
-
-    return total;
-}
-
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    int N; cin >> N;
-    set<int> history;
+    string N; cin >> N;
+    bool isHappy = false;
+    set<int> seen;
 
-    while (N > 1) {
-        if (history.find(N) != history.end()) {
-            cout << "No\n";
-            return 0;
+    while (true) {
+        int total = 0;
+        for (int i = 0; i < N.length(); i++) {
+            int target = N[i] - '0';
+            total += target * target;
         }
 
-        history.insert(N);
-        N = calc(N);
+        if (total == 1) {
+            isHappy = true;
+            break;
+        }
+
+        if (seen.contains(total)) break;
+
+        seen.insert(total);
+        N = to_string(total);
     }
-    cout << "Yes\n";
+
+    cout << ((isHappy) ? "Yes\n" : "No\n");
 
     return 0;
 }

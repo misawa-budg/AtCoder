@@ -1,14 +1,16 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int N; cin >> N;
 
-    cout << (1 << N) - 2 * N << '\n';
+    int base = 1;
+    for (int i = 0; i < N; i++) base *= 2;
+
+    cout << base - 2 * N << '\n';
 
     return 0;
 }
