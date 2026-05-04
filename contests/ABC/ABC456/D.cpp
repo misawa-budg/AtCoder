@@ -8,7 +8,6 @@ int main()
 
     string S; cin >> S;
     long long A = 0, B = 0, C = 0;
-
     const long long MOD = 998244353;
 
     for (char c : S) {
@@ -21,9 +20,7 @@ int main()
         }
     }
 
-    long long total = (A + B + C) % MOD;
-
-    cout << total << '\n';
+    cout << (A + B + C) % MOD << '\n';
 
     return 0;
 }
