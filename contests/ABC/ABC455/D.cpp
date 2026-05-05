@@ -7,38 +7,32 @@ int main()
     cin.tie(nullptr);
 
     int N, Q; cin >> N >> Q;
+    vector<int> up(2 * N + 1, -1), down(2 * N + 1, -1);
 
-    vector<int> up(2 * N + 1, 0);
-    vector<int> down(2 * N + 1, 0);
-
-    for (int i = 1; i <= N; ++i) {
+    for (int i = 1; i <= N; i++) {
         up[N + i] = i;
         down[i] = N + i;
     }
 
-    for (int q = 0; q < Q; ++q) {
-        int C, P;
-        cin >> C >> P;
+    for (int i = 0; i < Q; i++) {
+        int c, p; cin >> c >> p;
 
-        int prev_down = down[C];
-        up[prev_down] = 0;
-
-        down[C] = P;
-        up[P] = C;
+        up[down[c]] = -1;
+        down[c] = p;
+        up[p] = c;
     }
 
-    for (int i = 1; i <= N; ++i) {
-        int count = 0;
-        int curr = up[N + i];
-        
-        while (curr != 0) {
-            count++;
-            curr = up[curr];
+    for (int i = 1; i <= N; i++) {
+        int base = N + i;
+        int ans = 0;
+
+        while (up[base] != -1) {
+            base = up[base];
+            ans++;
         }
-        
-        cout << count << (i == N ? "" : " ");
+
+        cout << ans << ((i == N) ? '\n' : ' ');
     }
-    cout << '\n';
 
     return 0;
 }

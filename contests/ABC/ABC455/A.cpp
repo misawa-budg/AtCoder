@@ -7,7 +7,6 @@ int main()
     cin.tie(nullptr);
 
     int A, B, C; cin >> A >> B >> C;
-
     cout << ((A != B && B == C) ? "Yes\n" : "No\n");
 
     return 0;

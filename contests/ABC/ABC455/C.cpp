@@ -7,27 +7,26 @@ int main()
     cin.tie(nullptr);
 
     int N, K; cin >> N >> K;
-    long long total = 0;
-    map<long long, long long> sums_map; 
-    
+    vector<long long> A(N); for (int i = 0; i < N; i++) cin >> A[i];
+    map<long long, long long> mp;
+
     for (int i = 0; i < N; i++) {
-        long long A; cin >> A;
-        sums_map[A] += A;
-        total += A;
+        mp[A[i]]++;
     }
 
     vector<long long> sums;
-    for (auto p : sums_map) {
-        sums.push_back(p.second);
+    for (auto [key, value] : mp) {
+        sums.push_back(key * value);
     }
 
-    sort(sums.rbegin(), sums.rend());
+    sort(sums.begin(), sums.end());
 
-    int limit = min(K, (int)sums.size());
-    for (int i = 0; i < limit; i++) {
-        total -= sums[i];
+    long long total = 0;
+    for (int i = 0; i < (int) sums.size() - K; i++) {
+        total += sums[i];
     }
 
     cout << total << '\n';
+
     return 0;
 }
