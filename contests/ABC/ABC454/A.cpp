@@ -7,6 +7,7 @@ int main()
     cin.tie(nullptr);
 
     int L, R; cin >> L >> R;
+    
     cout << R - L + 1 << '\n';
 
     return 0;

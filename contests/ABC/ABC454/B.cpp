@@ -7,26 +7,23 @@ int main()
     cin.tie(nullptr);
 
     int N, M; cin >> N >> M;
-    vector<int>F(N); for (int i = 0; i < N; i++) cin >> F[i];
+    vector<int> F(N); for (int i = 0; i < N; i++) cin >> F[i];
 
-    set<int> seen;
+    vector<bool> kinds(M + 1, false);
+    int all = 0;
     for (int i = 0; i < N; i++) {
-        seen.insert(F[i]);
+        if (!kinds[F[i]]) all++;
+        kinds[F[i]] = true;
     }
 
-    if (seen.size() != N) {
+    if (all != N) {
         cout << "No\n";
     } else {
         cout << "Yes\n";
     }
 
-    vector<bool> wear(M, false);
-    for (int i = 0; i < N; i++) {
-        wear[F[i]-1] = true;
-    }
-
-    for (int i = 0; i < M; i++) {
-        if (!wear[i]) {
+    for (int i = 1; i <= M; i++) {
+        if (!kinds[i]) {
             cout << "No\n";
             return 0;
         }

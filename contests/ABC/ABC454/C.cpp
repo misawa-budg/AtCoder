@@ -7,35 +7,30 @@ int main()
     cin.tie(nullptr);
 
     int N, M; cin >> N >> M;
-    vector<int> A(M), B(M);
+    vector<vector<int>> adj(N + 1);
     for (int i = 0; i < M; i++) {
-        cin >> A[i] >> B[i];
-        A[i]--; B[i]--;
+        int A, B; cin >> A >> B;
+        adj[A].push_back(B);
     }
 
-    map<int, vector<int>> exchanges;
-    for (int i = 0; i < M; i++) {
-        exchanges[A[i]].push_back(B[i]);
-    }
-
-    vector<bool> available(N, false);
-    available[0] = true;
-
+    vector<bool> can(N + 1, false);
     queue<int> q;
-    q.push(0);
-    while (!q.empty()) {
-        int item = q.front(); q.pop();
+    can[1] = true;
+    q.push(1);
 
-        for (int get : exchanges[item]) {
-            if (available[get]) continue;
-            available[get] = true;
-            q.push(get);
+    while (!q.empty()) {
+        int cur = q.front(); q.pop();
+
+        for (const int next : adj[cur]) {
+            if (can[next]) continue;
+            can[next] = true;
+            q.push(next);
         }
     }
 
     int count = 0;
-    for (int i = 0; i < N; i++) {
-        if (available[i]) count++;
+    for (int i = 1; i <= N; i++) {
+        if (can[i]) count++;
     }
 
     cout << count << '\n';
