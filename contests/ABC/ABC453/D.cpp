@@ -1,81 +1,78 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main() {
+int main()
+{
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int H, W; cin >> H >> W;
-    vector<vector<char>> S(H, vector<char>(W));
-    int sr=-1, sc=-1, gr=-1, gc=-1;
+    vector<string> grid(H); for (int i = 0; i < H; i++) cin >> grid[i];
+
+    int dr[] = {-1, 1, 0, 0}; int dc[] = {0, 0, -1, 1};
+
+    int sr, sc, gr, gc;
     for (int i = 0; i < H; i++) {
         for (int j = 0; j < W; j++) {
-            cin >> S[i][j];
-            if (S[i][j] == 'S') {
-                sr = i; sc = j;
-            } else if (S[i][j] == 'G') {
-                gr = i; gc = j;
-            }
+            if (grid[i][j] == 'S') { sr = i; sc = j; }
+            if (grid[i][j] == 'G') { gr = i; gc = j; }
         }
     }
 
-    vector<vector<vector<bool>>> visited(H, vector<vector<bool>>(W, vector<bool>(4, false)));
-    vector<vector<vector<int>>> prev_dir(H, vector<vector<int>>(W, vector<int>(4)));
-
-    int dr[] = {0, 0, -1, 1}; int dc[] = {-1, 1, 0, 0};
-    char dirs[] = {'L', 'R', 'U', 'D'};
-
-    queue<tuple<int, int, int>> q;
+    vector dist(H, vector(W, vector<int>(4, INT_MIN)));
+    vector pr(H, vector(W, vector<tuple<int, int, int>>(4, {-1, -1, -1})));
     
+    queue<tuple<int, int, int>> q;
+
     for (int i = 0; i < 4; i++) {
-        int nr = sr + dr[i];
-        int nc = sc + dc[i];
-        if (nr < 0 || H <= nr || nc < 0 || W <= nc) continue;
-        if (S[nr][nc] == '#') continue;
-        visited[nr][nc][i] = true;
-        prev_dir[nr][nc][i] = -1;
-        q.emplace(nr, nc, i);
+        dist[sr][sc][i] = 0;
+        q.emplace(sr, sc, i);
     }
 
-    int goal_dir = -1;
-
+    int final_dir = -1;
     while (!q.empty()) {
-        auto [cr, cc, dir] = q.front(); q.pop();
-        if (cr == gr && cc == gc) { goal_dir = dir; break;}
+        auto [r, c, d] = q.front(); q.pop();
 
+        if (r == gr && c == gc) {
+            final_dir = d;
+            break;
+        }
+
+        char cur = grid[r][c];
         for (int i = 0; i < 4; i++) {
-            if (S[cr][cc] == 'o' && dir != i) continue;
-            if (S[cr][cc] == 'x' && dir == i) continue;
-            int nr = cr + dr[i]; int nc = cc + dc[i];
-            if (nr < 0 || H <= nr || nc < 0 || W <= nc) continue;
-            if (S[nr][nc] == '#') continue;
-            if (visited[nr][nc][i]) continue;
+            if (cur == 'o' && d != i) continue;
+            if (cur == 'x' && d == i) continue;
 
-            visited[nr][nc][i] = true;
-            prev_dir[nr][nc][i] = dir;
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+
+            if (nr < 0 || H <= nr || nc < 0 || W <= nc) continue;
+            if (grid[nr][nc] == '#' || dist[nr][nc][i] != INT_MIN) continue;
+
+            dist[nr][nc][i] = dist[r][c][d] + 1;
+            pr[nr][nc][i] = {r, c, d};
             q.emplace(nr, nc, i);
         }
     }
 
-    if (goal_dir == -1) {
+    char dir[] = {'U', 'D', 'L', 'R'};
+
+    if (final_dir == -1) {
         cout << "No\n";
     } else {
         cout << "Yes\n";
-        string ans;
-        int cr = gr, cc = gc, d = goal_dir;
-        
-        while (d != -1) {
-            ans += dirs[d];
-            int pr = cr - dr[d];
-            int pc = cc - dc[d];
-            d = prev_dir[cr][cc][d];
-            cr = pr; cc = pc;
+        string ans = "";
+        int curr = gr, curc = gc, curd = final_dir;
+
+        while (curr != sr || curc != sc) {
+            ans += dir[curd];
+            auto [prevr, prevc, prevd] = pr[curr][curc][curd];
+            curr = prevr; curc = prevc; curd = prevd;
         }
 
         reverse(ans.begin(), ans.end());
         cout << ans << '\n';
     }
-
 
     return 0;
 }
