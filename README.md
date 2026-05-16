@@ -32,4 +32,9 @@ ABCコミット補助
 
 # 手動指定も可能
 ./contests/ABC/ac-commit.sh 443 A B C
+
+# リトライとしてまとめてコミット
+./contests/ABC/ac-commit.sh --retry
+./contests/ABC/ac-commit.sh --retry 443
+./contests/ABC/ac-commit.sh --push --retry 443 A C D
 ```
