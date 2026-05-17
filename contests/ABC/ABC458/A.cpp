@@ -1,18 +1,14 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     string S; cin >> S;
     int N; cin >> N;
 
-    for (int i = N; i < S.size() - N; i++) {
-        cout << S[i];
-    }
-    cout << '\n';
+    cout << S.substr(N, S.size() - 2 * N) << '\n';
 
     return 0;
 }
