@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
@@ -14,30 +13,41 @@ int main()
 
     int M; cin >> M;
     vector<string> S(M);
-    bool has[11][11][26];
+
+    bool can_use[11][11][26];
+    memset(can_use, false, sizeof(can_use));
+
     for (int i = 0; i < M; i++) {
         cin >> S[i];
-        for (int j = 0; j < S[i].length(); j++) {
-            has[S[i].length()][j + 1][S[i][j] - 'a'] = true;
+        int len = S[i].length();
+
+        for (int j = 0; j < len; j++) {
+            int idx = S[i][j] - 'a';
+            can_use[len][j][idx] = true;
         }
     }
 
     for (int i = 0; i < M; i++) {
-        if (S[i].length() != N) {
+        string center = S[i];
+
+        if (center.length() != N) {
             cout << "No\n";
             continue;
         }
 
-        bool ok = true;
+        bool possible = true;
         for (int j = 0; j < N; j++) {
-            if (!has[A[j]][B[j]][S[i][j] - 'a']) {
-                ok = false;
+            int target_len = A[j];
+            int target_pos = B[j] - 1;
+            int target_char = center[j] - 'a';
+
+            if (!can_use[target_len][target_pos][target_char]) {
+                possible = false;
                 break;
             }
         }
 
-        if (ok) cout << "Yes\n";
-        else cout << "No\n";
+        cout << (possible ? "Yes\n" : "No\n");
     }
 
     return 0;
