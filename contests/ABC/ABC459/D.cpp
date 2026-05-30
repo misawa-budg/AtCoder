@@ -1,43 +1,44 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
     int T; cin >> T;
     while (T--) {
         string S; cin >> S;
-        int n = S.size();
 
-        vector<int> count(26);
-        for (char c : S) count[c - 'a']++;
+        vector<int> occur(26, 0);
+        for (char c : S) occur[c - 'a']++;
 
-        int maxCount = *max_element(count.begin(), count.end());
+        int maxOccur = *max_element(occur.begin(), occur.end());
 
-        if (maxCount > ((n + 1) / 2)) {
+        if (maxOccur > (S.size() + 1) / 2) {
             cout << "No\n";
             continue;
         }
-        
+
         cout << "Yes\n";
 
-        vector<pair<int, char>> freq;
-        for (int i = 0; i < 26; i++) {
-            freq.push_back({count[i], char('a' + i)});
+        string ans;
+        char lastChar = '.';
+        for (int i = 0; i < S.size(); i++) {
+            
+            char maxChar = '?';
+            int maxOccur = 0;
+            for (int j = 0; j < 26; j++) {
+                if (char('a' + j) == lastChar) continue;
+                if (maxOccur < occur[j]) {
+                    maxChar = char('a' + j);
+                    maxOccur = occur[j];
+                }
+            }
+
+            ans += maxChar;
+            lastChar = maxChar;
+            occur[maxChar - 'a']--;
         }
-
-        sort(freq.rbegin(), freq.rend());
-
-        string chars;
-        for (auto [num, c] : freq) chars += string(num, c);
-
-        string ans(n, '.');
-        int idx = 0;
-
-        for (int i = 0; i < n; i += 2) ans[i] = chars[idx++];
-        for (int i = 1; i < n; i += 2) ans[i] = chars[idx++];
 
         cout << ans << '\n';
     }

@@ -1,8 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main()
-{
+int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
@@ -12,29 +11,24 @@ int main()
     vector<int> counts(Q + 1, 0);
     counts[0] = N;
 
-    int removed = 0;
-    int maxQ = Q;
+    int offset = 0;
 
-    while (Q--) {
+    for (int i = 0; i < Q; i++) {
         int query; cin >> query;
-        
+
         if (query == 1) {
             int x; cin >> x;
 
-            counts[columns[x] + 1]++;
             columns[x]++;
+            counts[columns[x]]++;
 
-            if (counts[removed + 1] == N) removed++;
+            if (counts[columns[x]] == N) offset++;
 
         } else if (query == 2) {
             int y; cin >> y;
 
-            int target = y + removed;
-            if (target > maxQ) {
-                cout << 0 << '\n';
-            } else {
-                cout << counts[target] << '\n';
-            }
+            if (y + offset > Q) cout << 0 << '\n';
+            else cout << counts[y + offset] << '\n';
         }
     }
 
